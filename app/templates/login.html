@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login - 1337Shop</title>
+    <meta name="description" content="Free open source Tailwind CSS Store template">
+    <meta name="keywords" content="tailwind,tailwindcss,tailwind css,css,starter template,free template,store template, shop layout, minimal, monochrome, minimalistic, theme, nordic">
+	
+    <script src="/js/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="/css/styles.css">
+
+    <style>
+                
+        #menu-toggle:checked + #menu {
+            display: block;
+        }
+        
+        .hover\:grow {
+            transition: all 0.3s;
+            transform: scale(1);
+        }
+        
+        .hover\:grow:hover {
+            transform: scale(1.02);
+        }
+        
+        .carousel-open:checked + .carousel-item {
+            position: static;
+            opacity: 100;
+        }
+        
+        .carousel-item {
+            -webkit-transition: opacity 0.6s ease-out;
+            transition: opacity 0.6s ease-out;
+        }
+        
+        #carousel-1:checked ~ .control-1,
+        #carousel-2:checked ~ .control-2,
+        #carousel-3:checked ~ .control-3 {
+            display: block;
+        }
+        
+        .carousel-indicators {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            position: absolute;
+            bottom: 2%;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 10;
+        }
+        
+        #carousel-1:checked ~ .control-1 ~ .carousel-indicators li:nth-child(1) .carousel-bullet,
+        #carousel-2:checked ~ .control-2 ~ .carousel-indicators li:nth-child(2) .carousel-bullet,
+        #carousel-3:checked ~ .control-3 ~ .carousel-indicators li:nth-child(3) .carousel-bullet {
+            color: #000;
+            /*Set to match the Tailwind colour you want the active one to be */
+        }
+    </style>
+
+</head>
+
+<body class="bg-yankeesblue font-poppins text-gray-600  leading-normal text-base tracking-normal">    
+
+    <section class="py-8 text-pictonblue">
+
+        <div class="container mx-auto flex justify-center items-center flex-wrap pt-4 pb-12">
+
+                <div class="px-8 py-6 mt-4 text-left shadow-lg">
+                    <div class="flex justify-center">
+                        <img src="/imgs/logo.png" alt="" width="248" height="248" class="rounded-xl mb-5">
+                    </div>
+                    <h3 class="text-2xl font-bold text-center">Login to your account</h3>
+                    <form action="">
+                        <div class="mt-4">
+                            <div>
+                                <label class="block" for="username">Username<label>
+                                        <input id="usernameInput" type="text" name="username" placeholder="Username"
+                                            class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                            </div>
+                            <div class="mt-4">
+                                <label class="block">Password<label>
+                                        <input id="passwordInput" type="password" name="password" placeholder="Password"
+                                            class="w-full px-4 py-2 mt-2 border rounded-md focus:outline-none focus:ring-1 focus:ring-blue-600">
+                            </div>
+                            <div class="flex items-baseline justify-between">
+                                <button id="loginSubmit" class="px-6 py-2 mt-4 text-yankeesblue bg-pictonblue rounded-lg hover:bg-blue-900">Login</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+        </div>
+
+    </section>
+
+    <footer class="container mx-auto py-8 border-t border-gray-400">
+        <div class="container flex px-3 py-8 ">
+            <div class="w-full mx-auto flex flex-wrap">
+                <div class="flex w-full lg:w-1/2 ">
+                    <div class="px-3 md:px-0">
+                        <h3 class="font-bold text-pictonblue">About</h3>
+                        <p class="py-4 text-pictonblue">
+                            1337Shop is an e-commerce shop with modern technology.
+                        </p>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+
+        
+        const loginSubmitButton = document.getElementById("loginSubmit")
+        const usernameInput = document.getElementById("usernameInput")
+        const passwordInput = document.getElementById("passwordInput")
+
+        loginSubmitButton.addEventListener("click", (e) => {
+            e.preventDefault()
+            let username = usernameInput.value
+            let password = passwordInput.value
+
+
+            fetch("/admin/login", {
+            body: JSON.stringify({
+                username: username,
+                password: password
+            }),
+            headers: {
+                "Content-Type": "application/json"
+            },
+            method: "POST",
+            mode: "cors",
+            credentials: 'include'
+            }).then(res => res.json()).then(data => {
+                if (data.success){
+                    document.location = "/admin"
+                } else {
+                    alert("Username or Password is wrong!")
+                }
+            })
+        })
+
+    </script>
+
+</body>
+
+</html>

@@ -1,0 +1,40 @@
+version: "3.8"
+services:
+    nodeserver:
+        restart: unless-stopped
+        build:
+            context: ./app
+        depends_on: 
+          - mongo
+        links:
+          - "mongo"
+        networks:
+          - app-network
+    nginx:
+        restart: always
+        build:
+            context: ./nginx
+        ports:
+            - "0.0.0.0:80:80"
+        links:
+          - "nodeserver"
+        depends_on:
+          - nodeserver
+        networks:
+          - app-network
+    mongo:
+        image: mongo
+        container_name: mongo
+        volumes:
+          - ./mongodb/prevloginlogs.json:/mongodb/prevloginlogs.json
+          - ./mongodb/users.json:/mongodb/users.json
+          - ./mongodb/import.sh:/mongodb/import.sh
+        ports:
+          - '27017:27017'
+        restart: unless-stopped
+        networks:
+          - app-network
+    
+networks:
+  app-network:
+    driver: bridge 

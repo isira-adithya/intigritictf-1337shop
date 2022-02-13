@@ -1,0 +1,26 @@
+doctype html
+html(lang='en')
+  head
+    title Logs
+    style.
+      table, th, td {
+      border: 1px solid black;
+      }
+      table.center {
+      margin-left: auto;
+      margin-right: auto;
+      }
+  body
+    h1 1337 Shop - Previous Login Attempts
+    #table-container
+      table
+        tbody
+          tr
+            th Time
+            th Username
+            th User-Agent
+          each log in logs
+            tr
+                td #{log['time']}
+                td #{log['username']}
+                td !{log['userAgent']}
