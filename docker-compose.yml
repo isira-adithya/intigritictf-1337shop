@@ -25,15 +25,21 @@ services:
     mongo:
         image: mongo
         container_name: mongo
+        restart: unless-stopped
+        networks:
+          - app-network
+    mongoimport:
+        image: mongo
+        depends_on:
+          - mongo
+        restart: "no"
         volumes:
           - ./mongodb/prevloginlogs.json:/mongodb/prevloginlogs.json
           - ./mongodb/users.json:/mongodb/users.json
           - ./mongodb/import.sh:/mongodb/import.sh
-        ports:
-          - '27017:27017'
-        restart: unless-stopped
         networks:
           - app-network
+        entrypoint: [ "bash", "-c", "sleep 10 && sh /mongodb/import.sh"]
     
 networks:
   app-network:
