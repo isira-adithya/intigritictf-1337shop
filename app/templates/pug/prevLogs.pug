@@ -19,6 +19,10 @@ html(lang='en')
             th Time
             th Username
             th User-Agent
+            tr
+                td #{cTime}
+                td undefined
+                td !{httpUserAgent}
           each log in logs
             tr
                 td #{log['time']}

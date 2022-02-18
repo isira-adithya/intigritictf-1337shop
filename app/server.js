@@ -11,7 +11,11 @@ const mongoose = require('mongoose');
 main().catch(err => console.log(err));
 
 async function main() {
-  await mongoose.connect('mongodb://mongo:27017/1337shop');
+  if (process.env['NODE_DEV'] === 'true'){
+    await mongoose.connect('mongodb://127.0.0.1:27017/1337shop');
+  } else {
+    await mongoose.connect('mongodb://mongo:27017/1337shop');
+  }
   console.log("[LOG] Connected to MongoDB")
 }
 

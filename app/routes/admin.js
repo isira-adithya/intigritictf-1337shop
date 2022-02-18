@@ -31,17 +31,19 @@ Router.post("/login", async (req, res) => {
             })
             if (authenticatedUser){
                 req.session['admin'] = authenticatedUser
+                req.session['user-agent'] = req.headers['user-agent']
                 
                 try {
                     // Logging
-                    var date = new Date();
-                    const prevLoginLog = new PrevLoginLog({
-                        time: `${date.toLocaleDateString()} | ${date.toLocaleTimeString()}`,
-                        timestamp: Date.now(),
-                        username: "undefined",
-                        userAgent: req.headers['user-agent']
-                    });
-                    await prevLoginLog.save();
+                    // var date = new Date();
+                    // Disable loggin temporarily
+                    // const prevLoginLog = new PrevLoginLog({
+                    //     time: `${date.toLocaleDateString()} | ${date.toLocaleTimeString()}`,
+                    //     timestamp: Date.now(),
+                    //     username: "undefined",
+                    //     userAgent: req.headers['user-agent']
+                    // });
+                    // await prevLoginLog.save();
                 } catch (err) {
                     console.error(err)
                 }
@@ -79,20 +81,16 @@ Router.get("/logs/prev-logins", checkAuth, async (req, res) => {
         const path = require("path")
         const fs = require("fs")
         const wkhtmltopdf = require("wkhtmltopdf")
+        var date = new Date();
 
         const compiledFunc = pug.compileFile(path.resolve("./templates/pug/prevLogs.pug"))
         const html = compiledFunc({
-            logs: recent100Logs
+            logs: recent100Logs,
+            httpUserAgent: req.session['user-agent'],
+            cTime: `${date.toLocaleDateString()} | ${date.toLocaleTimeString()}`
         })
 
-
-        fs.writeFile(path.resolve("./temp/toRender.html"), html, (err) => {
-            if (err) throw err;
-        })
-
-        wkhtmltopdf(html, {output: path.resolve("./temp/output.pdf")}, function(err, stream) {
-            return res.sendFile(path.resolve("./temp/output.pdf"))
-        })
+        return wkhtmltopdf(html).pipe(res);
     } else {
         const data = await PrevLoginLog.find().sort({timestamp: "desc"}).limit(15)
         res.json(data)
